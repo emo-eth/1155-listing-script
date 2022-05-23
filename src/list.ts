@@ -8,7 +8,7 @@ let providerUrl = process.env.ETH_RPC_URL;
 let apiKey = process.env.OPENSEA_API_KEY;
 let tokenAddress = process.env.TOKEN_CONTRACT_ADDRESS;
 let tokenId = process.env.TOKEN_ID;
-let rinkeby = process.env.RINKEBY;
+let rinkeby = !!process.env.RINKEBY;
 let secret = process.env.SECRET;
 let accountAddress = process.env.ACCOUNT_ADDRESS;
 
