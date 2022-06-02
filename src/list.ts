@@ -15,6 +15,7 @@ let rinkeby = !!process.env.RINKEBY;
 let secret = process.env.SECRET;
 let accountAddress = process.env.ACCOUNT_ADDRESS;
 let numListings = +process.env.NUM_LISTINGS;
+let price = +process.env.PRICE;
 
 let networkName = Network.Main;
 
@@ -49,7 +50,7 @@ async function main(): Promise<any> {
     const orderArgs = {
       asset: { ...OpenSeaAsset, schemaName: "ERC1155" },
       accountAddress,
-      startAmount: 1.2,
+      startAmount: price,
       listingTime,
       expirationTime,
     };
