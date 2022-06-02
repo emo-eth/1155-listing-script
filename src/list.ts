@@ -4,8 +4,8 @@ import { config } from "dotenv";
 import { sleep } from "./util.js";
 
 config();
-config(".secret");
-config(".env2");
+config("secret.txt");
+config("env.txt");
 
 let providerUrl = process.env.ETH_RPC_URL;
 let apiKey = process.env.OPENSEA_API_KEY;
