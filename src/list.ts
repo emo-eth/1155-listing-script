@@ -36,7 +36,7 @@ async function main(): Promise<any> {
     tokenAddress,
     tokenId,
   });
-  const listingTime = 1654606800;
+  const listingTime = 1654608600;
   // expires in 1 month
   const expirationTime = listingTime + 60 * 60 * 24 * 30;
   let i = 0;
