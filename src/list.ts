@@ -4,6 +4,8 @@ import { config } from "dotenv";
 import { sleep } from "./util.js";
 
 config();
+config(".secret");
+config(".env2");
 
 let providerUrl = process.env.ETH_RPC_URL;
 let apiKey = process.env.OPENSEA_API_KEY;
@@ -16,13 +18,11 @@ let numListings = +process.env.NUM_LISTINGS;
 
 let networkName = Network.Main;
 
-console.log(providerUrl);
 if (rinkeby) {
   networkName = Network.Rinkeby;
 }
-console.log(secret);
 const provider = new HDWalletProvider({
-  privateKeys: [secret],
+  privateKeys: ["0x" + secret],
   providerOrUrl: providerUrl,
 });
 
@@ -36,12 +36,15 @@ async function main(): Promise<any> {
     tokenAddress,
     tokenId,
   });
-
-  for (let i = 0; i < numListings; i++) {
+  const listingTime = 1654606800;
+  // expires in 1 month
+  const expirationTime = listingTime + 60 * 60 * 24 * 30;
+  let i = 0;
+  for (; i < numListings; i += 5) {
     // listing starts in 10 seconds
-    const listingTime = Math.round(Date.now() / 1000) + 10;
-    // expires in 24 hours
-    const expirationTime = listingTime + 60 * 60 * 24;
+    if (i % 10 == 0) {
+      console.log(`listed ${i}`);
+    }
 
     const orderArgs = {
       asset: { ...OpenSeaAsset, schemaName: "ERC1155" },
@@ -50,10 +53,25 @@ async function main(): Promise<any> {
       listingTime,
       expirationTime,
     };
-    const listing = await seaport.createSellOrder(orderArgs);
-    console.log(listing);
-    // approximately 10/sec
-    await sleep(100);
+    let promises = [];
+    for (let i = 0; i < 5; i++) {
+      promises.push(
+        seaport.createSellOrder(orderArgs).catch((err) => {
+          console.log("failed; decrementing counter");
+          i -= 1;
+        })
+      );
+      await sleep(111);
+    }
+    await Promise.all(promises);
+    // console.log(promises);
+  }
+
+  while (i < numListings) {
+    console.log(`listed ${i}`);
+    await seaport.createSellOrder(orderArgs).then((err) => (i -= 1));
+    await sleep(101);
+    i++;
   }
 }
 
